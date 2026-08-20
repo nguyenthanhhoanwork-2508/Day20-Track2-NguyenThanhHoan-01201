@@ -142,19 +142,25 @@ vẫn rõ: đỉnh ở 8, sụp ở 16.
 > Bỏ trống nếu không làm. Xem `bonus/README.md`. Đừng làm hết — **một** finding sâu
 > ăn điểm hơn năm bảng nông.
 
-**Đã làm:** _<B1 build-compare / B2 sweep nào / B4 challenge nào / B5 lựa chọn nào>_
+**Đã làm:** B2 — `sweep-gpu` (GPU offload level sweep, `-ngl` 0 đến 99)
 
 **Numbers:**
 
 ```
-before:  <số>
-after:   <số>
-speedup: <X.Y>×
+before:  -ngl 0  (CPU-only) → 30.1 tok/s
+after:   -ngl 99 (full GPU offload) → 35.9 tok/s
+speedup: 1.19×
 ```
 
 **Điều này nói lên gì mà deck chưa nói:**
 
-_(để trống nếu bạn không làm phần này)_
+Curve tăng đều, không peak-và-tụt ở giá trị partial nào — nghĩa là model
+(Qwen3.5 0.8B, ~0.5 GB) đủ nhỏ để nằm gọn trong 8083 MiB VRAM chia sẻ của
+Intel Iris Xe, không có chi phí host↔device do phải evict/refetch weight.
+Deck thường nói "GPU offload luôn nhanh hơn", nhưng tại đây speedup chỉ
+1.19× — khiêm tốn so với GPU rời có VRAM riêng — vì Iris Xe là **integrated
+GPU dùng chung băng thông RAM với CPU**, nên lợi ích của offload bị giới hạn
+bởi cùng một memory bus, không phải một kênh bandwidth độc lập như GPU rời.
 
 ---
 
